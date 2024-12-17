@@ -1,0 +1,49 @@
+GET http://localhost:3000/ads
+###
+GET http://localhost:3000/ads/4
+###
+GET http://localhost:3000/ads?category=Vide poche
+###
+
+POST  http://localhost:3000/ads
+Content-Type: application/json
+
+{
+    "title": "Dame-jeanne 3",
+    "description": "DJOAT Dame-jeanne Of All Time",
+    "location": "Lyon",
+    "owner": "dj.seller@gmail.com",
+    "price": 7000,
+    "picture": "/images/dame-jeanne.webp",
+    "category" : {"id": 6},
+    "tags" : [{"id": 1},{"id":2}]
+    
+}
+
+###
+PUT http://localhost:3000/ads/4
+Content-Type: application/json
+
+{
+    
+    "title": " Voiture",
+    "description": "Super Car fast as f boiiiii",
+    "owner": "bike.seller@gmail.com",
+    "price": 1000,
+    "picture": "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
+    "location": "Paris",
+    "category":{"id":6},
+    "tags": [{"id": 3 }, {"id": 1}]
+}
+###
+PATCH http://localhost:3000/ads/14
+Content-Type: application/json
+
+{
+
+    "category": {"id": 8}
+
+}
+###
+DELETE  http://localhost:3000/ads/12
+
