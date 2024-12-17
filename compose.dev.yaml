@@ -1,0 +1,8 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - 8080:5173
+    command: npm run dev
+    volumes:
+      - ./frontend/src/:/app/src/
