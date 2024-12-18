@@ -188,6 +188,7 @@ export default function NewAd() {
             value={categoryId ?? ""}
             onChange={(e) => setCategoryId(Number(e.target.value))}
           >
+            <option>---</option>
             {categories?.map((category) => (
               <option value={category.id} key={category.id}>
                 {category.title}

@@ -2,7 +2,29 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - 8080:5173
-    command: npm run dev
+      - 5173:5173
     volumes:
       - ./frontend/src/:/app/src/
+      - ./frontend/public/:/app/public
+      - ./frontend/index.html/:/app/index.html
+      - ./frontend/vite.config.ts/:/app/vite.config.ts
+  backend:
+    build: ./backend
+    ports:
+      - 4000:4000
+    volumes:
+      - ./backend/src/:/app/src
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password123
+      POSTGRES_USER: thegoodcorner
+      POSTGRES_DB: thegoodcorner
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+volumes:
+  dbdata:
+    driver: local

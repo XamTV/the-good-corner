@@ -1,8 +1,11 @@
-FROM node:lts-alpine
+FROM node:20-alpine3.21
 
 WORKDIR /app
-COPY package*.json yarn.lock ./
-RUN npm i
-COPY src public index.html vite.config.ts tsconfig.app.json tsconfig.json tsconfig.node.json ./
+COPY package.json yarn.lock ./
+RUN yarn
+COPY vite.config.ts tsconfig.app.json tsconfig.json tsconfig.node.json ./
+COPY index.html ./
+COPY public ./
+COPY src ./ 
 
-CMD ["npm", "run", "dev"]
+CMD ["yarn","dev"]
