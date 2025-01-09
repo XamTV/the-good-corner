@@ -19,16 +19,22 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="main-menu">
+      <div className=" flex justify-between items-center  ">
         <h1>
-          <Link to="/" className="button logo link-button">
-            <span className="mobile-short-label">TGC</span>
-            <span className="desktop-long-label">THE GOOD CORNER</span>
+          <Link
+            to="/"
+            className="min-w-10 h-10 text-orange-400 font-bold border-none "
+          >
+            <span className="md:hidden">TGC</span>
+            <span className="hidden md:inline">THE GOOD CORNER</span>
           </Link>
         </h1>
-        <form className="text-field-with-button">
-          <input className="text-field main-search-field" type="search" />
-          <button className="button button-primary">
+        <form className="flex grow justify-center items-center gap-1">
+          <input
+            className="h-10 w-64 bg-white border-2  border-orange-400 rounded-lg text-xs"
+            type="search"
+          />
+          <button className="size-10 flex items-center justify-center rounded-lg bg-orange-400 text-white">
             <svg
               aria-hidden="true"
               width="16"
@@ -43,21 +49,24 @@ export default function Navbar() {
             </svg>
           </button>
         </form>
-        <Link to="/ads/new" className="button link-button">
-          <span className="mobile-short-label">Publier</span>
-          <span className="desktop-long-label">Publier une annonce</span>
+        <Link
+          to="/ads/new"
+          className="border-2 border-orange-400 rounded-lg font-bold text-orange-400  p-2"
+        >
+          <span className="md:hidden">Publier</span>
+          <span className="hidden md:inline">Publier une annonce</span>
         </Link>
       </div>
-      <nav className="categories-navigation">
+      <nav className="flex justify-center">
         {categories?.map((category, index) => (
           <Link
             key={category.id}
             to={`/categories/${category.id}`}
-            className="category-navigation-link"
+            className=""
             state={{ category }}
           >
-            {" "}
-            {category.title} {index < categories.length ? "•" : ""}
+            {category.title}
+            {index < categories.length - 1 ? "•" : ""}
           </Link>
         ))}
       </nav>

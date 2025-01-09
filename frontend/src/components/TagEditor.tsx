@@ -4,7 +4,7 @@ import { GET_TAGS } from "../services/queries";
 import { useMutation } from "@apollo/client";
 
 export type TagType = {
-  id: number;
+  id: string;
   title: string;
 };
 

@@ -8,8 +8,9 @@ import { DELETE_AD } from "../services/mutations";
 export default function AdPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const { loading: loadingGet, data } = useQuery(GET_AD, {
-    variables: { readAdId: id! }, // verify
+    variables: { readAdId: id! },
   });
 
   const ad = data?.readAd;
@@ -18,43 +19,57 @@ export default function AdPage() {
     deleteAd: AdProps;
   }>(DELETE_AD);
 
-  function onUpdate() {
-    navigate(`/ads/${id}/edit`);
-  }
+  const loading = loadingGet || loadingDelete;
 
-  async function doSubmit() {
-    await doDeleteAd({
-      variables: {
-        deleteAdId: id,
-      },
-    });
-  }
-
-  const loading = loadingDelete || loadingGet;
   if (loading) {
     return <Loader />;
   }
+
+  const handleDelete = async () => {
+    await doDeleteAd({ variables: { deleteAdId: id } });
+    navigate("/");
+  };
+
+  const handleEdit = () => {
+    navigate(`/ads/${id}/edit`);
+  };
+
   return (
-    <section className="ad-detailed-container">
-      <h1 className="ad-detailed-title "> {ad?.title} </h1>
-      <img className="ad-detailed-picture" src={ad?.picture} alt={ad?.title} />
-      <p className="ad-detailed-p1"> {ad?.description} </p>
-      <p className="ad-detailed-p2">
-        Prix : {((ad?.price ?? 0) / 100).toFixed(2)} €
-      </p>
-      <p className="ad-detailed-p3">catégorie : {ad?.category?.title} </p>
-      <button
-        className="button ad-detailed-button"
-        onClick={async () => {
-          await doSubmit();
-          navigate("/");
-        }}
-      >
-        Supprimer l'offre
-      </button>
-      <button className="button ad-detailed-button2" onClick={onUpdate}>
-        Modifier l'offre
-      </button>
-    </section>
+    <div className="bg-orange-100 rounded-lg p-6 shadow-lg max-w-4xl mx-auto mt-10">
+      <h1 className="text-orange-500 font-bold text-3xl mb-4">{ad?.title}</h1>
+      <div className="flex flex-col md:flex-row gap-6">
+        <img
+          src={ad?.picture}
+          alt={ad?.title}
+          className="w-full md:w-1/2 h-auto rounded-lg shadow-md"
+        />
+        <div className="flex flex-col justify-between flex-1">
+          <p className="text-gray-700 text-lg">{ad?.description}</p>
+          <p className="text-gray-800 font-semibold text-xl mt-4">
+            Prix : {((ad?.price ?? 0) / 100).toFixed(2)} €
+          </p>
+          <p className="text-gray-600 mt-2">
+            Catégorie :{" "}
+            <span className="text-gray-800 font-medium">
+              {ad?.category?.title ?? "Non spécifiée"}
+            </span>
+          </p>
+          <div className="flex gap-4 mt-6">
+            <button
+              onClick={handleDelete}
+              className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
+            >
+              Supprimer l'offre
+            </button>
+            <button
+              onClick={handleEdit}
+              className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+            >
+              Modifier l'offre
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

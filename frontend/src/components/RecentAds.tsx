@@ -31,10 +31,12 @@ export default function RecentAds() {
     return <p>Chargement...</p>;
   }
   return (
-    <>
-      <h2>Annonces récentes</h2>
-      <p>Montant du panier : {(amount / 100).toFixed(2)} € </p>
-      <section className="recent-ads">
+    <div className="bg-orange-100 rounded-lg p-4">
+      <h2 className="text-orange-400 font-bold text-2xl mx-3 my-2">
+        Annonces récentes
+      </h2>
+
+      <section className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
         {ads
           ?.map((ad) => (
             <Ad
@@ -47,10 +49,11 @@ export default function RecentAds() {
               description={ad.description}
               owner={ad.owner}
               location={ad.location}
+              tags={ad.tags}
             />
           ))
           .reverse()}
       </section>
-    </>
+    </div>
   );
 }

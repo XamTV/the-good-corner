@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-
 import Ad from "../components/Ad";
 import Loader from "../components/Loader";
 import { useQuery } from "@apollo/client";
@@ -20,21 +19,26 @@ export default function CategoryPage() {
   if (loading) {
     return <Loader />;
   }
+
   return (
-    <div className="recent-ads">
-      {categorizedAds?.map((categorizedAd) => (
-        <section className="ad-card-container" key={categorizedAd.id}>
-          <Ad
-            title={categorizedAd.title}
-            picture={categorizedAd.picture}
-            price={categorizedAd.price}
-            id={Number(categorizedAd.id)}
-            description={categorizedAd.description}
-            location={categorizedAd.location}
-            owner={categorizedAd.owner}
-          />
-        </section>
-      ))}
+    <div className=" mx-auto my-2 p-6 max-w-4xl bg-orange-200 rounded-lg shadow-lg">
+      <div className="overflow-y-auto max-h-[80vh]">
+        <div className="flex gap-4">
+          {categorizedAds?.map((categorizedAd) => (
+            <section key={categorizedAd.id}>
+              <Ad
+                title={categorizedAd.title}
+                picture={categorizedAd.picture}
+                price={categorizedAd.price}
+                id={Number(categorizedAd.id)}
+                description={categorizedAd.description}
+                location={categorizedAd.location}
+                owner={categorizedAd.owner}
+              />
+            </section>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

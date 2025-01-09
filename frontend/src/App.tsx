@@ -12,10 +12,10 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      <header>
+      <header className="fixed top-0 left-0 right-0 p-2 bg-white border-b-white border-solid">
         <Navbar />
       </header>
-      <main className="main-content">
+      <main className="max-w-max mx-auto mt-40">
         <Outlet />
       </main>
     </ApolloProvider>

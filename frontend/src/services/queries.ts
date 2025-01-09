@@ -28,6 +28,10 @@ export const GET_ADS = gql(`
       owner
       price
       picture
+      tags {
+        id
+        title
+      }
     }
   }
 `);

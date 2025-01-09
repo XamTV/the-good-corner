@@ -40,8 +40,13 @@ export default function NewAd() {
 
       const tagsIds: number[] = [];
       for (const tag of ad.tags || []) {
-        tagsIds.push(Number(tag.id));
+        const tagId = Number(tag.id);
+        if (!tagsIds.includes(tagId)) {
+          tagsIds.push(tagId);
+        }
       }
+      console.log("tags to add : ", tagsIds);
+
       setTagsIds(tagsIds);
     }
   }, [ad]);
@@ -74,7 +79,7 @@ export default function NewAd() {
       if (ad) {
         const { data } = await doUpdateAd({
           variables: {
-            updateAdId: ad.id,
+            updateAdId: ad.id, // ID de l'annonce à modifier
             data: {
               title,
               description,
@@ -82,7 +87,7 @@ export default function NewAd() {
               location,
               picture,
               owner,
-              category: categoryId ? { id: `${categoryId}` } : null,
+              category: categoryId ? { id: `${categoryId}` } : null, // ID de la catégorie
               tags: tagsIds.map((id) => ({ id: `${id}` })),
             },
           },
@@ -111,151 +116,170 @@ export default function NewAd() {
     }
   }
 
+  console.log("TagsIds =>", tagsIds);
+
   const [showCategoryEditor, setShowCategoryEditor] = useState(false);
   const [showTagEditor, setShowTagEditor] = useState(false);
 
   if (loading) {
-    return <p>Chargement</p>;
+    return <p className="text-center text-gray-500">Chargement...</p>;
   }
 
   return (
-    <div>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          doSubmit();
-        }}
-      >
-        <label>
-          Titre * :
-          <input
-            required
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Prix (en euros) :
-          <input
-            type="number"
-            value={price / 100}
-            onChange={(e) => setPrice(Number(e.target.value) * 100)}
-          />
-        </label>
-        <br />
-        <label>
-          Description :
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Localisation :
-          <input
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Image (URL) :
-          <input
-            type="text"
-            value={picture}
-            onChange={(e) => setPicture(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Auteur :
-          <input
-            type="text"
-            value={owner}
-            onChange={(e) => setOwner(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Catégorie :
-          <select
-            value={categoryId ?? ""}
-            onChange={(e) => setCategoryId(Number(e.target.value))}
-          >
-            <option>---</option>
-            {categories?.map((category) => (
-              <option value={category.id} key={category.id}>
-                {category.title}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button
-          type="button"
-          onClick={() => {
-            setShowCategoryEditor(!showCategoryEditor);
+    <div
+      className="container mx-auto p-6 max-w-4xl bg-white rounded-lg shadow-lg"
+      style={{ maxHeight: "calc(100vh - 20px)" }}
+    >
+      {error && <p className="text-red-500 text-center">{error}</p>}
+      <div className="overflow-y-auto max-h-[80vh]">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            doSubmit();
           }}
+          className="space-y-6"
         >
-          {showCategoryEditor === true ? "Cacher" : "Nouvelle catégorie"}
-        </button>
-        {showCategoryEditor && (
-          <CategoryEditor
-            onCategoryCreated={(id) => {
-              setShowCategoryEditor(false);
-
-              setCategoryId(id);
-            }}
-          />
-        )}
-        <br />
-        <div>
-          Tags :
-          {tags?.map((tag) => (
-            <label key={tag.id}>
-              <input
-                type="checkbox"
-                checked={tagsIds.includes(Number(tag.id)) === true}
+          <div>
+            <label className="block font-medium text-lg">Titre *</label>
+            <input
+              required
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block font-medium text-lg">Prix (en euros)</label>
+            <input
+              type="number"
+              value={price / 100}
+              onChange={(e) => setPrice(Number(e.target.value) * 100)}
+              className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block font-medium text-lg">Description</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block font-medium text-lg">Localisation</label>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block font-medium text-lg">Image (URL)</label>
+            <input
+              type="text"
+              value={picture}
+              onChange={(e) => setPicture(e.target.value)}
+              className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block font-medium text-lg">Auteur</label>
+            <input
+              type="text"
+              value={owner}
+              onChange={(e) => setOwner(e.target.value)}
+              className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block font-medium text-lg">Catégorie</label>
+            <div className="flex items-center space-x-4">
+              <select
+                value={categoryId ?? ""}
+                onChange={(e) => setCategoryId(Number(e.target.value))}
+                className="flex-grow border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
+              >
+                <option>---</option>
+                {categories?.map((category) => (
+                  <option value={category.id} key={category.id}>
+                    {category.title}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
                 onClick={() => {
-                  const tagId = Number(tag.id);
-                  if (tagsIds.includes(tagId) === true) {
-                    const newArray = tagsIds.filter((entry) => entry !== tagId);
-                    setTagsIds(newArray);
-                  } else {
-                    setTagsIds([...tagsIds, tagId]);
-                  }
+                  setShowCategoryEditor(!showCategoryEditor);
+                }}
+                className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
+              >
+                {showCategoryEditor === true ? "Cacher" : "Nouvelle catégorie"}
+              </button>
+            </div>
+            {showCategoryEditor && (
+              <CategoryEditor
+                onCategoryCreated={(id) => {
+                  setShowCategoryEditor(false);
+                  setCategoryId(id);
                 }}
               />
-              {tag.title}
-            </label>
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={() => {
-            setShowTagEditor(!showTagEditor);
-          }}
-        >
-          {showTagEditor === true ? "Cacher" : "Nouveau tag"}
-        </button>
-        {showTagEditor && (
-          <TagEditor
-            onTagCreated={(id) => {
-              setShowTagEditor(false);
-
-              setTagsIds([...tagsIds, id]);
-            }}
-          />
-        )}
-        <br />
-        <br />
-        <button>{ad ? "Modifier mon annonce" : "Créer mon annonce"}</button>
-      </form>
+            )}
+          </div>
+          <div>
+            <label className="block font-medium text-lg">Tags</label>
+            <div className="flex flex-wrap gap-4">
+              {tags?.map((tag) => (
+                <label
+                  key={tag.id}
+                  className="inline-flex items-center space-x-2"
+                >
+                  <input
+                    type="checkbox"
+                    checked={tagsIds.includes(Number(tag.id)) === true}
+                    onClick={() => {
+                      const tagId = Number(tag.id);
+                      if (tagsIds.includes(tagId) === true) {
+                        const newArray = tagsIds.filter(
+                          (entry) => entry !== tagId
+                        );
+                        setTagsIds(newArray);
+                      } else {
+                        setTagsIds([...tagsIds, tagId]);
+                      }
+                    }}
+                  />
+                  <span className="text-sm">{tag.title}</span>
+                </label>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowTagEditor(!showTagEditor)}
+              className="mt-4 bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
+            >
+              {showTagEditor ? "Cacher" : "Nouveau tag"}
+            </button>
+            {showTagEditor && (
+              <TagEditor
+                onTagCreated={(id) => {
+                  setShowTagEditor(false);
+                  setTagsIds([...tagsIds, id]);
+                }}
+              />
+            )}
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-green-500 text-white rounded-md px-6 py-2 hover:bg-green-600"
+            >
+              {ad ? "Modifier l'annonce" : "Créer l'annonce"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
