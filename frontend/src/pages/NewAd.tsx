@@ -5,11 +5,14 @@ import { TagEditor } from "../components/TagEditor";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_AD, GET_CATEGORIES, GET_TAGS } from "../services/queries";
 import { CREATE_AD, UPDATE_AD } from "../services/mutations";
+import { useAuth } from "../hooks/useAuth";
 
 export default function NewAd() {
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
   const id = params.id && Number(params.id);
+
+  const { me } = useAuth();
 
   const { data } = useQuery(GET_AD, {
     variables: { readAdId: id as string },
@@ -24,18 +27,19 @@ export default function NewAd() {
   const [price, setPrice] = useState(0);
   const [location, setLocation] = useState("");
   const [picture, setPicture] = useState("");
-  const [owner, setOwner] = useState("");
   const [categoryId, setCategoryId] = useState<number | null>();
   const [tagsIds, setTagsIds] = useState<number[]>([]);
 
+  console.log("current owner =>", me?.email);
+  console.log("current state =>");
+
   useEffect(() => {
-    if (ad) {
+    if (ad && me) {
       setTitle(ad.title);
       setDescription(ad.description);
       setPrice(ad.price);
       setLocation(ad.location);
       setPicture(ad.picture);
-      setOwner(ad.owner);
       setCategoryId(ad.category?.id ? Number(ad.category?.id) : null);
 
       const tagsIds: number[] = [];
@@ -45,11 +49,10 @@ export default function NewAd() {
           tagsIds.push(tagId);
         }
       }
-      console.log("tags to add : ", tagsIds);
 
       setTagsIds(tagsIds);
     }
-  }, [ad]);
+  }, [ad, me]);
 
   const { data: categoryData } = useQuery(GET_CATEGORIES);
   const categories = categoryData?.readCategories;
@@ -58,6 +61,7 @@ export default function NewAd() {
     if (categories?.length && categoryId) {
       setCategoryId(Number(categories[0].id));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories]);
 
   const { data: tagsData } = useQuery(GET_TAGS);
@@ -86,7 +90,6 @@ export default function NewAd() {
               price,
               location,
               picture,
-              owner,
               category: categoryId ? { id: `${categoryId}` } : null, // ID de la catégorie
               tags: tagsIds.map((id) => ({ id: `${id}` })),
             },
@@ -102,7 +105,6 @@ export default function NewAd() {
               price,
               location,
               picture,
-              owner,
               category: { id: `${categoryId}` },
               tags: tagsIds.map((id) => ({ id: `${id}` })),
             },
@@ -181,15 +183,6 @@ export default function NewAd() {
               type="text"
               value={picture}
               onChange={(e) => setPicture(e.target.value)}
-              className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
-            />
-          </div>
-          <div>
-            <label className="block font-medium text-lg">Auteur</label>
-            <input
-              type="text"
-              value={owner}
-              onChange={(e) => setOwner(e.target.value)}
               className="w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
             />
           </div>

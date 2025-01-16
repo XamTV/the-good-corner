@@ -25,7 +25,6 @@ export const GET_ADS = gql(`
       title
       description
       location
-      owner
       price
       picture
       tags {
@@ -46,7 +45,7 @@ export const GET_ADS_BY_CATEGORY_ID = gql(`
         id
         description
         location
-        owner
+
       }
     }
   }
@@ -59,9 +58,11 @@ export const GET_AD = gql(`
       title
       description
       location
-      owner
       price
       picture
+      createdBy {
+        email
+      }
       category {
         id
         title
@@ -70,6 +71,14 @@ export const GET_AD = gql(`
         id
         title
       }
+    }
+  }
+`);
+
+export const WHOAMI = gql(`
+  query Whoami {
+    whoami {
+      email
     }
   }
 `);

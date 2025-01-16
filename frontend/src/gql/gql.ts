@@ -19,11 +19,15 @@ const documents = {
     "\n  mutation CreateTag($data: TagCreateInput!) {\n    createTag(data: $data) {\n      id\n      title\n    }\n  }\n": types.CreateTagDocument,
     "\n  mutation UpdateAd($data: AdUpdateInput!, $updateAdId: ID!) {\n    updateAd(data: $data, id: $updateAdId) {\n      id\n      title\n    }\n  }\n": types.UpdateAdDocument,
     "\n  mutation DeleteAd($deleteAdId: ID!) {\n    deleteAd(id: $deleteAdId) {\n      id\n      title\n    }\n  }\n": types.DeleteAdDocument,
+    "\n  mutation CreateUser($data: UserCreateInput!) {\n    createUser(data: $data) {\n      id\n    }\n  }  \n": types.CreateUserDocument,
+    "\n  mutation SignIn($data: UserUpdateInput!) {\n      signIn(data: $data) {\n      email\n    }\n  }\n": types.SignInDocument,
+    "\n  mutation Mutation {\n  signout\n}\n": types.MutationDocument,
     "\n  query ReadCategories {\n    readCategories {\n      id\n      title\n    }\n  }\n": types.ReadCategoriesDocument,
     "\n  query ReadTags {\n    readTags {\n      id\n      title\n    }\n  }\n": types.ReadTagsDocument,
-    "\n  query ReadAds {\n    readAds {\n      id\n      title\n      description\n      location\n      owner\n      price\n      picture\n      tags {\n        id\n        title\n      }\n    }\n  }\n": types.ReadAdsDocument,
-    "\n  query ReadAdsByCategoryId($readCategoryId: ID!) {\n    readCategory(id: $readCategoryId) {\n      ads {\n        title\n        picture\n        price\n        id\n        description\n        location\n        owner\n      }\n    }\n  }\n": types.ReadAdsByCategoryIdDocument,
-    "\n  query ReadAd($readAdId: ID!) {\n    readAd(id: $readAdId) {\n      id\n      title\n      description\n      location\n      owner\n      price\n      picture\n      category {\n        id\n        title\n      }\n      tags {\n        id\n        title\n      }\n    }\n  }\n": types.ReadAdDocument,
+    "\n  query ReadAds {\n    readAds {\n      id\n      title\n      description\n      location\n      price\n      picture\n      tags {\n        id\n        title\n      }\n    }\n  }\n": types.ReadAdsDocument,
+    "\n  query ReadAdsByCategoryId($readCategoryId: ID!) {\n    readCategory(id: $readCategoryId) {\n      ads {\n        title\n        picture\n        price\n        id\n        description\n        location\n\n      }\n    }\n  }\n": types.ReadAdsByCategoryIdDocument,
+    "\n  query ReadAd($readAdId: ID!) {\n    readAd(id: $readAdId) {\n      id\n      title\n      description\n      location\n      price\n      picture\n      createdBy {\n        email\n      }\n      category {\n        id\n        title\n      }\n      tags {\n        id\n        title\n      }\n    }\n  }\n": types.ReadAdDocument,
+    "\n  query Whoami {\n    whoami {\n      email\n    }\n  }\n": types.WhoamiDocument,
 };
 
 /**
@@ -63,6 +67,18 @@ export function gql(source: "\n  mutation DeleteAd($deleteAdId: ID!) {\n    dele
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  mutation CreateUser($data: UserCreateInput!) {\n    createUser(data: $data) {\n      id\n    }\n  }  \n"): (typeof documents)["\n  mutation CreateUser($data: UserCreateInput!) {\n    createUser(data: $data) {\n      id\n    }\n  }  \n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation SignIn($data: UserUpdateInput!) {\n      signIn(data: $data) {\n      email\n    }\n  }\n"): (typeof documents)["\n  mutation SignIn($data: UserUpdateInput!) {\n      signIn(data: $data) {\n      email\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation Mutation {\n  signout\n}\n"): (typeof documents)["\n  mutation Mutation {\n  signout\n}\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n  query ReadCategories {\n    readCategories {\n      id\n      title\n    }\n  }\n"): (typeof documents)["\n  query ReadCategories {\n    readCategories {\n      id\n      title\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -71,15 +87,19 @@ export function gql(source: "\n  query ReadTags {\n    readTags {\n      id\n   
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query ReadAds {\n    readAds {\n      id\n      title\n      description\n      location\n      owner\n      price\n      picture\n      tags {\n        id\n        title\n      }\n    }\n  }\n"): (typeof documents)["\n  query ReadAds {\n    readAds {\n      id\n      title\n      description\n      location\n      owner\n      price\n      picture\n      tags {\n        id\n        title\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query ReadAds {\n    readAds {\n      id\n      title\n      description\n      location\n      price\n      picture\n      tags {\n        id\n        title\n      }\n    }\n  }\n"): (typeof documents)["\n  query ReadAds {\n    readAds {\n      id\n      title\n      description\n      location\n      price\n      picture\n      tags {\n        id\n        title\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query ReadAdsByCategoryId($readCategoryId: ID!) {\n    readCategory(id: $readCategoryId) {\n      ads {\n        title\n        picture\n        price\n        id\n        description\n        location\n        owner\n      }\n    }\n  }\n"): (typeof documents)["\n  query ReadAdsByCategoryId($readCategoryId: ID!) {\n    readCategory(id: $readCategoryId) {\n      ads {\n        title\n        picture\n        price\n        id\n        description\n        location\n        owner\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query ReadAdsByCategoryId($readCategoryId: ID!) {\n    readCategory(id: $readCategoryId) {\n      ads {\n        title\n        picture\n        price\n        id\n        description\n        location\n\n      }\n    }\n  }\n"): (typeof documents)["\n  query ReadAdsByCategoryId($readCategoryId: ID!) {\n    readCategory(id: $readCategoryId) {\n      ads {\n        title\n        picture\n        price\n        id\n        description\n        location\n\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query ReadAd($readAdId: ID!) {\n    readAd(id: $readAdId) {\n      id\n      title\n      description\n      location\n      owner\n      price\n      picture\n      category {\n        id\n        title\n      }\n      tags {\n        id\n        title\n      }\n    }\n  }\n"): (typeof documents)["\n  query ReadAd($readAdId: ID!) {\n    readAd(id: $readAdId) {\n      id\n      title\n      description\n      location\n      owner\n      price\n      picture\n      category {\n        id\n        title\n      }\n      tags {\n        id\n        title\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query ReadAd($readAdId: ID!) {\n    readAd(id: $readAdId) {\n      id\n      title\n      description\n      location\n      price\n      picture\n      createdBy {\n        email\n      }\n      category {\n        id\n        title\n      }\n      tags {\n        id\n        title\n      }\n    }\n  }\n"): (typeof documents)["\n  query ReadAd($readAdId: ID!) {\n    readAd(id: $readAdId) {\n      id\n      title\n      description\n      location\n      price\n      picture\n      createdBy {\n        email\n      }\n      category {\n        id\n        title\n      }\n      tags {\n        id\n        title\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query Whoami {\n    whoami {\n      email\n    }\n  }\n"): (typeof documents)["\n  query Whoami {\n    whoami {\n      email\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

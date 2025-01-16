@@ -1,9 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 @layer components {
   .button {
-    @apply border-2 border-orange-400 rounded-lg font-bold text-orange-400 bg-white p-2;
+    border-width: 2px;
+    border-color: #fb923c;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    color: #fb923c;
+    background-color: white;
+    padding: 0.5rem;
+    margin-left: 0.5rem;
   }
 }

@@ -4,10 +4,13 @@ import Loader from "../components/Loader";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_AD } from "../services/queries";
 import { DELETE_AD } from "../services/mutations";
+import { useAuth } from "../hooks/useAuth";
 
 export default function AdPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const { me } = useAuth();
 
   const { loading: loadingGet, data } = useQuery(GET_AD, {
     variables: { readAdId: id! },
@@ -33,6 +36,7 @@ export default function AdPage() {
   const handleEdit = () => {
     navigate(`/ads/${id}/edit`);
   };
+  console.log("current ad =>", ad);
 
   return (
     <div className="bg-orange-100 rounded-lg p-6 shadow-lg max-w-4xl mx-auto mt-10">
@@ -54,20 +58,28 @@ export default function AdPage() {
               {ad?.category?.title ?? "Non spécifiée"}
             </span>
           </p>
-          <div className="flex gap-4 mt-6">
-            <button
-              onClick={handleDelete}
-              className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
-            >
-              Supprimer l'offre
-            </button>
-            <button
-              onClick={handleEdit}
-              className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
-            >
-              Modifier l'offre
-            </button>
-          </div>
+          <p className="text-gray-600 mt-2">
+            Auteur :
+            <span className="text-gray-800 font-medium">
+              {ad?.createdBy.email}
+            </span>
+          </p>
+          {me && (
+            <div className="flex gap-4 mt-6">
+              <button
+                onClick={handleDelete}
+                className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
+              >
+                Supprimer l'offre
+              </button>
+              <button
+                onClick={handleEdit}
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+              >
+                Modifier l'offre
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

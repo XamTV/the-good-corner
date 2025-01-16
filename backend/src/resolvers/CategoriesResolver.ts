@@ -1,10 +1,11 @@
-import { Arg, ID, Mutation, Query } from "type-graphql";
+import { Arg, Authorized, Ctx, ID, Mutation, Query } from "type-graphql";
 import {
   Category,
   CategoryCreateInput,
   CategoryUpdateInput,
 } from "../entities/Category";
 import { In } from "typeorm";
+import { AuthContextType } from "../auth";
 
 export class CategoriesResolver {
   @Query(() => [Category])
@@ -24,22 +25,31 @@ export class CategoriesResolver {
     return category;
   }
 
+  @Authorized()
   @Mutation(() => Category)
   async createCategory(
+    @Ctx() context: AuthContextType,
     @Arg("data", () => CategoryCreateInput) data: CategoryCreateInput
   ) {
     const category = new Category();
-    Object.assign(category, data);
+    Object.assign(category, data, {
+      createdAt: new Date(),
+      createdBy: context.user,
+    });
     await category.save();
     return category;
   }
-
+  @Authorized()
   @Mutation(() => Category, { nullable: true })
   async updateCategory(
+    @Ctx() context: AuthContextType,
     @Arg("id", () => ID) id: number,
     @Arg("data", () => CategoryUpdateInput) data: CategoryUpdateInput
   ): Promise<Category | null> {
-    const category = await Category.findOneBy({ id });
+    const category = await Category.findOneBy({
+      id,
+      createdBy: { id: context.user.id },
+    });
     if (category !== null) {
       Object.assign(category, data);
       await category.save();

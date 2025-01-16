@@ -1,8 +1,9 @@
-import { Arg, ID, Mutation, Query } from "type-graphql";
+import { Arg, Authorized, Ctx, ID, Mutation, Query } from "type-graphql";
 import { Ad, AdCreateInput, AdUpdateInput } from "../entities/Ad";
-import { getRepository, In, Like } from "typeorm";
+import { In, Like } from "typeorm";
 import { validate } from "class-validator";
 import { Tag } from "../entities/Tag";
+import { AuthContextType } from "../auth";
 
 export class AdsResolver {
   @Query(() => [Ad])
@@ -25,17 +26,22 @@ export class AdsResolver {
   async readAd(@Arg("id", () => ID) id: number): Promise<Ad | null> {
     const ad = await Ad.findOne({
       where: { id },
-      relations: { category: true, tags: true },
+      relations: { category: true, tags: true, createdBy: true },
     });
     return ad;
   }
 
+  @Authorized()
   @Mutation(() => Ad)
   async createAd(
+    @Ctx() context: AuthContextType,
     @Arg("data", () => AdCreateInput) data: AdCreateInput
   ): Promise<Ad> {
     const ad = new Ad();
-    Object.assign(ad, data, { createdAt: new Date() });
+    Object.assign(ad, data, {
+      createdAt: new Date(),
+      createdBy: context.user,
+    });
 
     const error = await validate(ad);
     if (error.length) {
@@ -45,13 +51,17 @@ export class AdsResolver {
       return ad;
     }
   }
-
+  @Authorized()
   @Mutation(() => Ad, { nullable: true })
   async updateAd(
+    @Ctx() context: AuthContextType,
     @Arg("id", () => ID) id: number,
     @Arg("data", () => AdUpdateInput) data: AdUpdateInput
   ): Promise<Ad | null> {
-    const ad = await Ad.findOne({ where: { id }, relations: { tags: true } });
+    const ad = await Ad.findOne({
+      where: { id, createdBy: { id: context.user.id } },
+      relations: { tags: true, createdBy: true },
+    });
     if (ad !== null) {
       // Mettre à jour les autres champs
       Object.assign(ad, data);
@@ -89,9 +99,13 @@ export class AdsResolver {
     return null;
   }
 
+  @Authorized()
   @Mutation(() => Ad)
-  async deleteAd(@Arg("id", () => ID) id: number) {
-    const ad = await Ad.findOneBy({ id });
+  async deleteAd(
+    @Ctx() context: AuthContextType,
+    @Arg("id", () => ID) id: number
+  ) {
+    const ad = await Ad.findOneBy({ id, createdBy: { id: context.user.id } });
     if (ad !== null) {
       await ad.remove();
       Object.assign(ad, { id });

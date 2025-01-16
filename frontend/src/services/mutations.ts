@@ -44,3 +44,25 @@ export const DELETE_AD = gql(`
     }
   }
 `);
+
+export const CREATE_USER = gql(`
+  mutation CreateUser($data: UserCreateInput!) {
+    createUser(data: $data) {
+      id
+    }
+  }  
+`);
+
+export const SIGN_IN = gql(`
+  mutation SignIn($data: UserUpdateInput!) {
+      signIn(data: $data) {
+      email
+    }
+  }
+`);
+
+export const SIGN_OUT = gql(`
+  mutation Mutation {
+  signout
+}
+`);

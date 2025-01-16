@@ -8,12 +8,14 @@ import About from "./pages/About.tsx";
 import AdPage from "./pages/AdPage.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
 import NewAd from "./pages/NewAd.tsx";
+import SignInPage from "./pages/SignIn.tsx";
+import SignUpPage from "./pages/SignUp.tsx";
+import RequireAuth from "./hoc/requireAuth.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-
     children: [
       {
         path: "",
@@ -29,15 +31,39 @@ const router = createBrowserRouter([
       },
       {
         path: "ads/new",
-        element: <NewAd />,
+        element: (
+          <RequireAuth redirectToIfNotAuth="/signin">
+            <NewAd />
+          </RequireAuth>
+        ),
       },
       {
         path: "ads/:id/edit",
-        element: <NewAd />,
+        element: (
+          <RequireAuth redirectToIfNotAuth="/signin">
+            <NewAd />
+          </RequireAuth>
+        ),
       },
       {
         path: "about",
         element: <About />,
+      },
+      {
+        path: "signin",
+        element: (
+          <RequireAuth>
+            <SignInPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "signup",
+        element: (
+          <RequireAuth requireGuest redirectToIfAuth="/">
+            <SignUpPage />
+          </RequireAuth>
+        ),
       },
     ],
   },

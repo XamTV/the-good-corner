@@ -1,6 +1,7 @@
-import { useQuery } from "@apollo/client";
-import { Link } from "react-router-dom";
-import { GET_CATEGORIES } from "../services/queries";
+import { useMutation, useQuery } from "@apollo/client";
+import { Link, useNavigate } from "react-router-dom";
+import { GET_CATEGORIES, WHOAMI } from "../services/queries";
+import { SIGN_OUT } from "../services/mutations";
 
 export type CategoryProps = {
   id: number;
@@ -8,10 +9,28 @@ export type CategoryProps = {
 };
 
 export default function Navbar() {
-  const { loading, data } = useQuery(GET_CATEGORIES);
-  const categories = data?.readCategories;
+  const { loading: categoriesLoading, data: categoriesData } =
+    useQuery(GET_CATEGORIES);
+  const { loading: whoamiLoading, data: whoamiData } = useQuery(WHOAMI);
+  const categories = categoriesData?.readCategories;
 
-  console.log(data);
+  const me = whoamiData?.whoami;
+  const navigate = useNavigate();
+
+  console.log(me);
+
+  const [doSignOut] = useMutation(SIGN_OUT, { refetchQueries: [WHOAMI] });
+
+  const loading = categoriesLoading || whoamiLoading;
+
+  async function onSignOut() {
+    try {
+      await doSignOut();
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   if (loading) {
     return <p>Chargement ...</p>;
@@ -49,13 +68,37 @@ export default function Navbar() {
             </svg>
           </button>
         </form>
-        <Link
-          to="/ads/new"
-          className="border-2 border-orange-400 rounded-lg font-bold text-orange-400  p-2"
-        >
-          <span className="md:hidden">Publier</span>
-          <span className="hidden md:inline">Publier une annonce</span>
-        </Link>
+        {(() => {
+          if (me) {
+            return (
+              <>
+                <Link to="/ads/new" className="button">
+                  <button className="md:hidden">Publier</button>
+                  <button className="hidden md:inline">
+                    Publier une annonce
+                  </button>
+                </Link>
+
+                <button className="button hidden md:inline" onClick={onSignOut}>
+                  Deconnecter
+                </button>
+              </>
+            );
+          } else if (me === null) {
+            return (
+              <>
+                <Link to="/signup" className="button">
+                  <button className="hidden md:inline">S'inscrire </button>
+                </Link>
+                <Link to="/signin" className="button">
+                  <button className="hidden md:inline">Se connecter</button>
+                </Link>
+              </>
+            );
+          } else {
+            return null;
+          }
+        })()}
       </div>
       <nav className="flex justify-center">
         {categories?.map((category, index) => (
